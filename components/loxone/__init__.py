@@ -10,14 +10,14 @@ from esphome.const import (
 DEPENDENCIES = ['network']
 
 loxone_ns = cg.esphome_ns.namespace('loxone')
-LoxOneComponent = loxone_ns.class_('LoxOneComponent', cg.PollingComponent)
+LoxoneComponent = loxone_ns.class_('LoxoneComponent', cg.PollingComponent)
 OnDataTrigger = loxone_ns.class_(
     "OnDataTrigger", automation.Trigger.template(cg.std_vector.template(cg.uint8)), cg.Component
 )
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.GenerateID(): cv.declare_id(UniversalUartComponent),
-    cv.Required("loxone_ip"): cv.string,
+    cv.GenerateID(): cv.declare_id(LoxoneComponent),
+    cv.Required("loxone_ip"): cv.ipv4,
     cv.Required("loxone_port"): cv.int_range(0, 65535),
     cv.Optional("on_data"): automation.validate_automation(
         {
@@ -27,8 +27,9 @@ CONFIG_SCHEMA = cv.Schema({
 }).extend(cv.COMPONENT_SCHEMA)
 
 def to_code(config):
+    cg.add_library("ESP32 Async UDP", None)
     var = cg.new_Pvariable(config[CONF_ID])
-    cg.add(var.set_loxone_ip(config["loxone_ip"]))
+    cg.add(var.set_loxone_ip(str(config["loxone_ip"])))
     cg.add(var.set_loxone_port(config["loxone_port"]))
     yield cg.register_component(var, config)
 
