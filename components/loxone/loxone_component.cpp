@@ -38,10 +38,26 @@ namespace esphome {
           ESP_LOGD(TAG, "client connect failed");
         }
       }
+
+      if (udp_client_ready) {
+        while (!pending_send_string_data_.empty()) {
+          std::string d = pending_send_string_data_.front();
+          udp_client_.print(d.c_str());
+          ESP_LOGD(TAG, "pop from queue, string data: %s", d.c_str());
+          pending_send_string_data_.pop();
+        }
+      }
     }
 
-    void LoxoneComponent::send_string_data(const std::string &data) {
+    void LoxoneComponent::send_string_data(std::string data) {
+      if (!udp_client_ready) {
+        ESP_LOGD(TAG, "udp client is not ready, push into queue, string data: %s", data.c_str());
+        pending_send_string_data_.push(data.c_str());
+        return;
+      }
+
       udp_client_.print(data.c_str());
+      ESP_LOGD(TAG, "send string data: %s", data.c_str());
     }
   }
 }

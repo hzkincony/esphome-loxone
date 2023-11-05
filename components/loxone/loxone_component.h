@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <queue>
 
 #include "esphome.h"
 #include "esphome/core/component.h"
@@ -17,7 +18,7 @@ namespace esphome {
       LoxoneComponent() : PollingComponent(5000) {};
       void setup() override;
       void update() override;
-      void send_string_data(const std::string &data);
+      void send_string_data(std::string data);
       void set_loxone_ip(std::string loxone_ip) {
         this->loxone_ip_ = loxone_ip;
       };
@@ -33,6 +34,7 @@ namespace esphome {
       uint16_t loxone_port_;
       AsyncUDP udp_client_;
       AsyncUDP udp_server_;
+      std::queue<std::string> pending_send_string_data_{};
     };
 
     class OnDataTrigger : public Trigger<std::vector<uint8_t>>, public Component {
