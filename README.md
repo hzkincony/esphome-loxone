@@ -1,4 +1,9 @@
 # Loxone Component
+
+# Install
+1. Download the latest version of the zip from https://github.com/hzkincony/esphome-loxone/releases
+2. Extract loxone.zip to the custom_components folder in your esphome configuration dir.
+
 # Core Yaml
 ```yaml
 loxone:
