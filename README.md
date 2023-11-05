@@ -1,11 +1,6 @@
 # Loxone Component
 # Core Yaml
 ```yaml
-external_components:
-  - source:
-      type: local
-      path: custom_components/esphome-loxone
-
 loxone:
   id: loxone1
   loxone_ip: "192.168.50.124"
