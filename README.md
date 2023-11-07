@@ -10,11 +10,23 @@ loxone:
   id: loxone1
   loxone_ip: "192.168.50.124"
   loxone_port: 9999
+  listen_port: 8888
+  on_string_data:
+    - logger.log:
+        format: "on_string_data, data=%s"
+        args: [ data.c_str() ]
+    - lambda: !lambda |-
+        if (data == "RELAY-SET-255,1,1") {
+          id(loxone_switch_1).turn_on();
+        } else if (data == "RELAY-SET-255,1,0") {
+          id(loxone_switch_1).turn_off();
+        }
 
 switch:
   - platform: gpio
     pin: 22
     name: "Loxone Switch 1"
+    id: loxone_switch_1
     on_turn_on:
       - lambda: !lambda |-
           id(loxone1).send_string_data("RELAY-SET-255,1,1,OK");
