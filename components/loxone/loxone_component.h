@@ -11,7 +11,7 @@
 
 namespace esphome {
   namespace loxone {
-    class OnDataTrigger;
+    class OnStringDataTrigger;
 
     class LoxoneComponent : public PollingComponent {
     public:
@@ -25,26 +25,31 @@ namespace esphome {
       void set_loxone_port(uint16_t loxone_port) {
         this->loxone_port_ = loxone_port;
       };
-      void add_trigger(OnDataTrigger *trigger) {
-        this->triggers_.push_back(trigger);
+      void set_delimiter(std::string delimiter) {
+        this->delimiter_ = delimiter;
+      };
+      void add_string_trigger(OnStringDataTrigger *trigger) {
+        this->string_triggers_.push_back(trigger);
       };
     protected:
-      std::vector<OnDataTrigger *> triggers_{};
+      std::vector<OnStringDataTrigger *> string_triggers_{};
       std::string loxone_ip_;
       uint16_t loxone_port_;
+      std::string delimiter_;
       AsyncUDP udp_client_;
       AsyncUDP udp_server_;
+      std::string buffer_;
       std::queue<std::string> pending_send_string_data_{};
     };
 
-    class OnDataTrigger : public Trigger<std::vector<uint8_t>>, public Component {
+    class OnStringDataTrigger : public Trigger<std::string>, public Component {
       friend class LoxoneComponent;
 
     public:
-      explicit OnDataTrigger(LoxoneComponent *parent)
+      explicit OnStringDataTrigger(LoxoneComponent *parent)
         : parent_(parent){};
 
-      void setup() override { this->parent_->add_trigger(this); }
+      void setup() override { this->parent_->add_string_trigger(this); }
 
     protected:
       LoxoneComponent *parent_;
