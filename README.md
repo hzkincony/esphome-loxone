@@ -11,6 +11,7 @@ loxone:
   loxone_ip: "192.168.50.124"
   loxone_port: 9999
   listen_port: 8888
+  delimiter: "\n"
   on_string_data:
     - logger.log:
         format: "on_string_data, data=%s"
