@@ -16,7 +16,7 @@ namespace esphome {
       }
 
       if (udp_server_ready == false) {
-        if (udp_server_.listen(9999)) {
+        if (udp_server_.listen(listen_port_)) {
           udp_server_ready = true;
           ESP_LOGD(TAG, "listened");
           udp_server_.onPacket([this](AsyncUDPPacket packet) {
