@@ -8,17 +8,25 @@ from esphome.const import (
 )
 
 DEPENDENCIES = ['network']
+AUTO_LOAD = ['async_tcp']
 
 loxone_ns = cg.esphome_ns.namespace('loxone')
 LoxoneComponent = loxone_ns.class_('LoxoneComponent', cg.PollingComponent)
 OnStringDataTrigger = loxone_ns.class_("OnStringDataTrigger",
                                  automation.Trigger.template(cg.std_string, cg.Component))
 
+LOXONE_PROTOCOLS = {
+    "tcp": "tcp",
+    "udp": "udp"
+}
+
 CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(LoxoneComponent),
+    cv.Required("protocol"): cv.enum(LOXONE_PROTOCOLS),
     cv.Required("loxone_ip"): cv.ipv4,
     cv.Required("loxone_port"): cv.int_range(0, 65535),
     cv.Required("listen_port"): cv.int_range(0, 65535),
+    cv.Optional("send_buffer_length", default=20): cv.int_range(0, 1024),
     cv.Optional("delimiter", default="\n"): cv.string,
     cv.Optional("on_string_data"): automation.validate_automation(
         {
@@ -29,10 +37,13 @@ CONFIG_SCHEMA = cv.Schema({
 
 def to_code(config):
     cg.add_library("ESP32 Async UDP", None)
+    #cg.add_library("esphome/AsyncTCP-esphome", "2.0.1")
     var = cg.new_Pvariable(config[CONF_ID])
+    cg.add(var.set_protocol(config["protocol"]))
     cg.add(var.set_loxone_ip(str(config["loxone_ip"])))
     cg.add(var.set_loxone_port(config["loxone_port"]))
     cg.add(var.set_listen_port(config["listen_port"]))
+    cg.add(var.set_send_buffer_length(config["send_buffer_length"]))
     cg.add(var.set_delimiter(config["delimiter"]))
     yield cg.register_component(var, config)
 
