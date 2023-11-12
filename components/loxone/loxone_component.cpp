@@ -54,8 +54,12 @@ namespace esphome {
 
     void LoxoneComponent::fire_triggers() {
       // 检查缓冲区中是否含有 '\n'，即是否有完整的指令
+      if (delimiter_ == "") {
+        return;
+      }
+
       size_t pos;
-      while ((pos = receive_string_buffer_.find('\n')) != std::string::npos) {
+      while ((pos = receive_string_buffer_.find(delimiter_)) != std::string::npos) {
         // 提取完整的指令
         std::string command = receive_string_buffer_.substr(0, pos);
         receive_string_buffer_.erase(0, pos + 1); // 从缓冲区中移除这个指令
