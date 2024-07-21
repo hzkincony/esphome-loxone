@@ -1,4 +1,5 @@
 # Loxone Component
+more information, you can check with KinCony's webpage: https://www.kincony.com
 
 # Core Yaml
 ```yaml
