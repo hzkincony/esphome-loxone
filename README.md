@@ -6,7 +6,7 @@ more information, you can check with KinCony's webpage: https://www.kincony.com
 external_components:
   - source:
       type: git
-      url: https://github.com/hzkincony/esphome-loxone
+      url: https://github.com/chudini93/esphome-loxone-readonly
       ref: v1.2.1
 
 switch:
@@ -38,21 +38,8 @@ loxone:
   protocol: udp
   loxone_ip: "192.168.50.124" # loxone server ip
   loxone_port: 9999 # loxone server port
-  listen_port: 8888 # esp32 will listen on this port
-  delimiter: "\n" # delimiter used to identify the end of a command
 
   # Send buffer length
   # When the network is not ready, it can buffer some commands that are pending to be sent.
   send_buffer_length: 64
-
-  # The on_string_data function can handle received string commands.
-  # All received commands will be split using the delimiter,
-  # and this will trigger the logic of on_string_data
-  on_string_data:
-    - lambda: !lambda |-
-        if (data == "RELAY-SET-255,1,1") {
-          id(loxone_switch_1).turn_on();
-        } else if (data == "RELAY-SET-255,1,0") {
-          id(loxone_switch_1).turn_off();
-        }
 ```
