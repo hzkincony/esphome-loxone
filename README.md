@@ -7,7 +7,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/chudini93/esphome-loxone-readonly
-      ref: v1.2.1
+      ref: v1.0.0
 
 switch:
   - platform: gpio
