@@ -42,7 +42,7 @@ def to_code(config):
     cg.add(var.set_protocol(config["protocol"]))
     cg.add(var.set_loxone_ip(str(config["loxone_ip"])))
     cg.add(var.set_loxone_port(config["loxone_port"]))
-    #cg.add(var.set_listen_port(config["listen_port"]))
+    cg.add(var.set_listen_port(config["listen_port"]))
     cg.add(var.set_send_buffer_length(config["send_buffer_length"]))
     cg.add(var.set_delimiter(config["delimiter"]))
     yield cg.register_component(var, config)
