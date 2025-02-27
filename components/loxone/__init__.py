@@ -25,7 +25,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required("protocol"): cv.enum(LOXONE_PROTOCOLS),
     cv.Required("loxone_ip"): cv.ipv4address(),
     cv.Required("loxone_port"): cv.int_range(0, 65535),
-    //cv.Required("listen_port"): cv.int_range(0, 65535),
+    #cv.Required("listen_port"): cv.int_range(0, 65535),
     cv.Optional("send_buffer_length", default=20): cv.int_range(0, 1024),
     cv.Optional("delimiter", default="\n"): cv.string,
     cv.Optional("on_string_data"): automation.validate_automation(
@@ -42,7 +42,7 @@ def to_code(config):
     cg.add(var.set_protocol(config["protocol"]))
     cg.add(var.set_loxone_ip(str(config["loxone_ip"])))
     cg.add(var.set_loxone_port(config["loxone_port"]))
-    //cg.add(var.set_listen_port(config["listen_port"]))
+    #cg.add(var.set_listen_port(config["listen_port"]))
     cg.add(var.set_send_buffer_length(config["send_buffer_length"]))
     cg.add(var.set_delimiter(config["delimiter"]))
     yield cg.register_component(var, config)
