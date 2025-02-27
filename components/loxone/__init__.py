@@ -23,7 +23,7 @@ LOXONE_PROTOCOLS = {
 CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(LoxoneComponent),
     cv.Required("protocol"): cv.enum(LOXONE_PROTOCOLS),
-    cv.Required("loxone_ip"): cv.ipv4address(),
+    cv.Required("loxone_ip"): cv.ipv4address,
     cv.Required("loxone_port"): cv.int_range(0, 65535),
     #cv.Required("listen_port"): cv.int_range(0, 65535),
     cv.Optional("send_buffer_length", default=20): cv.int_range(0, 1024),
