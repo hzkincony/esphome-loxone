@@ -139,9 +139,9 @@ namespace esphome {
         return;
       }
 
-      //ensure_listen_udp();
-      //ensure_listen_tcp();
-      //ensure_connect_tcp();
+      ensure_listen_udp();
+      ensure_listen_tcp();
+      ensure_connect_tcp();
       ensure_connect_udp();
 
       if (client_ready_) {
