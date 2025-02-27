@@ -6,52 +6,6 @@ namespace esphome {
 
     }
 
-    void LoxoneComponent::ensure_listen_udp() {
-      if (protocol_ != "udp") {
-        return;
-      }
-
-      if (server_ready_) {
-        return;
-      }
-
-      if (udp_server_.listen(listen_port_)) {
-        server_ready_ = true;
-        ESP_LOGD(TAG, "listened");
-        udp_server_.onPacket([this](AsyncUDPPacket packet) {
-          ESP_LOGD(TAG, "receive data, length=%d, data=%s", packet.length(), packet.data());
-          receive_string_buffer_.append((char*)packet.data(), packet.length());
-          ESP_LOGD(TAG, "current buffer data=%s", receive_string_buffer_.c_str());
-          fire_triggers();
-        });
-      }
-    }
-
-    void LoxoneComponent::ensure_listen_tcp() {
-      if (protocol_ != "tcp") {
-        return;
-      }
-
-      if (server_ready_) {
-        return;
-      }
-
-      tcp_server_ = new AsyncServer(listen_port_);
-      tcp_server_->onClient([this](void* arg, AsyncClient *client) {
-        ESP_LOGD(TAG, "new client has been connected to server, ip: %s",
-                 client->remoteIP().toString().c_str());
-        client->onData([this](void* arg, AsyncClient *client, void *data, size_t len) {
-          ESP_LOGD(TAG, "receive data, length=%d, data=%s", len, data);
-          receive_string_buffer_.append((char*)data, len);
-          ESP_LOGD(TAG, "current buffer data=%s", receive_string_buffer_.c_str());
-          fire_triggers();
-        }, nullptr);
-      }, nullptr);
-      tcp_server_->begin();
-      server_ready_ = true;
-      ESP_LOGD(TAG, "listened");
-    }
-
     void LoxoneComponent::fire_triggers() {
       // 检查缓冲区中是否含有 '\n'，即是否有完整的指令
       if (delimiter_ == "") {
@@ -139,7 +93,6 @@ namespace esphome {
         return;
       }
 
-      ensure_listen_udp();
       ensure_listen_tcp();
       ensure_connect_tcp();
       ensure_connect_udp();
