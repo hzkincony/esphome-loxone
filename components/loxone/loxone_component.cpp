@@ -28,43 +28,7 @@ namespace esphome {
       }
     }
 
-    void LoxoneComponent::ensure_connect_tcp() {
-      if (protocol_ != "tcp") {
-        return;
-      }
-
-      if (tcp_client_.connected()) {
-        if (client_ready_ == false) {
-          ESP_LOGD(TAG, "client connected");
-        }
-        client_ready_ = true;
-
-      } else {
-        client_ready_ = false;
-        ESP_LOGD(TAG, "client not connected");
-      }
-
-      if (tcp_client_.connecting()) {
-        ESP_LOGD(TAG, "client still connecting");
-        return;
-      }
-
-      if (client_ready_) {
-        return;
-      }
-
-      if (tcp_client_.connect(loxone_ip_.c_str(), loxone_port_)) {
-        ESP_LOGD(TAG, "client connecting...");
-      } else {
-        ESP_LOGD(TAG, "client connect failed");
-      }
-    }
-
     void LoxoneComponent::ensure_connect_udp() {
-      if (protocol_ != "udp") {
-        return;
-      }
-
       if (udp_client_.connected()) {
         if (client_ready_ == false) {
           ESP_LOGD(TAG, "client connected");
@@ -93,23 +57,14 @@ namespace esphome {
         return;
       }
 
-      ensure_listen_tcp();
-      ensure_connect_tcp();
       ensure_connect_udp();
 
       if (client_ready_) {
         while (!send_string_buffer_.empty()) {
           std::string d = send_string_buffer_.front();
-          if (protocol_ == "udp") {
-            udp_client_.print(d.c_str());
-            udp_client_.print(delimiter_.c_str());
-            ESP_LOGD(TAG, "pop from queue, string data: %s", d.c_str());
-          } else if (protocol_ == "tcp") {
-            tcp_client_.add(d.c_str(), strlen(d.c_str()));
-            tcp_client_.add(delimiter_.c_str(), strlen(delimiter_.c_str()));
-            tcp_client_.send();
-            ESP_LOGD(TAG, "pop from queue, string data: %s", d.c_str());
-          }
+          udp_client_.print(d.c_str());
+          udp_client_.print(delimiter_.c_str());
+          ESP_LOGD(TAG, "pop from queue, string data: %s", d.c_str());
 
           send_string_buffer_.pop();
         }
@@ -128,16 +83,8 @@ namespace esphome {
         return;
       }
 
-      if (protocol_ == "udp") {
-        udp_client_.print(data.c_str());
-        udp_client_.print(delimiter_.c_str());
-      } else if (protocol_ == "tcp") {
-        tcp_client_.add(data.c_str(), strlen(data.c_str()));
-        tcp_client_.add(delimiter_.c_str(), strlen(delimiter_.c_str()));
-        tcp_client_.send();
-      } else {
-        return;
-      }
+      udp_client_.print(data.c_str());
+      udp_client_.print(delimiter_.c_str());
 
       ESP_LOGD(TAG, "send string data: %s", data.c_str());
     }
