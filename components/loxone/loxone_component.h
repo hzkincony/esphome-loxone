@@ -55,10 +55,7 @@ namespace esphome {
       bool server_ready_ = false;
       bool client_ready_ = false;
 
-      void ensure_listen_udp();
-      void ensure_listen_tcp();
       void fire_triggers();
-      void ensure_connect_tcp();
       void ensure_connect_udp();
     };
 
