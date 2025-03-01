@@ -7,20 +7,16 @@ namespace esphome {
     }
 
     void LoxoneComponent::fire_triggers() {
-      // 检查缓冲区中是否含有 '\n'，即是否有完整的指令
       if (delimiter_ == "") {
         return;
       }
 
       size_t pos;
       while ((pos = receive_string_buffer_.find(delimiter_)) != std::string::npos) {
-        // 提取完整的指令
         std::string command = receive_string_buffer_.substr(0, pos);
-        receive_string_buffer_.erase(0, pos + 1); // 从缓冲区中移除这个指令
+        receive_string_buffer_.erase(0, pos + 1);
 
-        // 对每一个完整的指令调用 triggers_ 的 trigger 方法
         if (!command.empty()) {
-          // 假设 triggers_ 是一个能够响应字符串指令的对象
           for (auto& trigger : string_triggers_) {
             trigger->trigger(command);
           }
