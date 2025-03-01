@@ -6,7 +6,6 @@
 #include "esphome.h"
 #include "esphome/core/component.h"
 #include "AsyncUDP.h"
-#include "AsyncTCP.h"
 
 #define TAG "loxone"
 
@@ -20,9 +19,6 @@ namespace esphome {
       void setup() override;
       void update() override;
       void send_string_data(std::string data);
-      void set_protocol(std::string protocol) {
-        this->protocol_ = protocol;
-      };
       void set_loxone_ip(std::string loxone_ip) {
         this->loxone_ip_ = loxone_ip;
       };
@@ -41,15 +37,12 @@ namespace esphome {
       };
     protected:
       std::vector<OnStringDataTrigger *> string_triggers_{};
-      std::string protocol_;
       std::string loxone_ip_;
       uint16_t loxone_port_;
       uint8_t send_buffer_length_;
       std::string delimiter_;
       AsyncUDP udp_client_;
       AsyncUDP udp_server_;
-      AsyncClient tcp_client_;
-      AsyncServer* tcp_server_;
       std::string receive_string_buffer_;
       std::queue<std::string> send_string_buffer_{};
       bool server_ready_ = false;
