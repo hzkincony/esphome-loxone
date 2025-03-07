@@ -6,6 +6,23 @@ namespace esphome {
 
     }
 
+    void LoxoneComponent::ensure_listen_udp() {
+      if (server_ready_) {
+        return;
+      }
+
+      if (udp_server_.listen(listen_port_)) {
+        server_ready_ = true;
+        ESP_LOGD(TAG, "listened");
+        udp_server_.onPacket([this](AsyncUDPPacket packet) {
+          ESP_LOGD(TAG, "receive data, length=%d, data=%s", packet.length(), packet.data());
+          receive_string_buffer_.append((char*)packet.data(), packet.length());
+          ESP_LOGD(TAG, "current buffer data=%s", receive_string_buffer_.c_str());
+          fire_triggers();
+        });
+      }
+    }
+
     void LoxoneComponent::fire_triggers() {
       if (delimiter_ == "") {
         return;
@@ -53,6 +70,7 @@ namespace esphome {
         return;
       }
 
+      ensure_listen_udp();
       ensure_connect_udp();
 
       if (client_ready_) {
