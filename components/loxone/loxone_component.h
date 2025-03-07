@@ -25,6 +25,9 @@ namespace esphome {
       void set_loxone_port(uint16_t port) {
         this->loxone_port_ = port;
       };
+      void set_listen_port(uint16_t port) {
+        this->listen_port_ = port;
+      };
       void set_delimiter(std::string delimiter) {
         this->delimiter_ = delimiter;
       };
@@ -39,6 +42,7 @@ namespace esphome {
       std::vector<OnStringDataTrigger *> string_triggers_{};
       std::string loxone_ip_;
       uint16_t loxone_port_;
+      uint16_t listen_port_;
       uint8_t send_buffer_length_;
       std::string delimiter_;
       AsyncUDP udp_client_;
@@ -48,6 +52,7 @@ namespace esphome {
       bool server_ready_ = false;
       bool client_ready_ = false;
 
+      void ensure_listen_udp();
       void fire_triggers();
       void ensure_connect_udp();
     };
