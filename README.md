@@ -6,8 +6,8 @@ more information, you can check with KinCony's webpage: https://www.kincony.com
 external_components:
   - source:
       type: git
-      url: https://github.com/hzkincony/esphome-loxone
-      ref: v1.2.1
+      url: https://github.com/zamojski/esphome-loxone
+      ref: v1.2.2
 
 switch:
   - platform: gpio
