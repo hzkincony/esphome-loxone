@@ -7,7 +7,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/hzkincony/esphome-loxone
-      ref: v1.2.1
+      ref: v1.2.2
 
 switch:
   - platform: gpio
